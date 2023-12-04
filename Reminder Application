@@ -1,1 +1,62 @@
+package CoreJava;
+
+import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class ReminderApplication {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Welcome to the Reminder Application!");
+        System.out.print("Enter the day of the week: ");
+        String dayOfWeek = scanner.nextLine();
+        System.out.print("Enter the time (in HH:mm format): ");
+        String time = scanner.nextLine();
+        System.out.print("Choose the activity: ");
+        String activity = scanner.nextLine();
+
+        scheduleReminder(dayOfWeek, time, activity);
+        System.out.println("Reminder scheduled. You will be reminded at " + time + " for " + activity + " on " + dayOfWeek);
+        scanner.close();
+    }
+
+    private static void scheduleReminder(String dayOfWeek, String time, String activity) {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                System.out.println("Reminder: It's time for " + activity + " on " + dayOfWeek);
+            }
+        }, calculateDelay(dayOfWeek, time));
+    }
+
+    private static long calculateDelay(String dayOfWeek, String time) {  
+        int currentDay = 1;
+        int targetDay = mapDayOfWeek(dayOfWeek);
+        long delay = ((targetDay - currentDay + 7) % 7) * 24 * 60 * 60 * 1000L 
+                + Integer.parseInt(time.split(":")[0]) * 60 * 60 * 1000L 
+                + Integer.parseInt(time.split(":")[1]) * 60 * 1000L; 
+        return delay;
+    }
+    private static int mapDayOfWeek(String dayOfWeek) {
+        switch (dayOfWeek.toLowerCase()) {
+            case "sunday":
+                return 1;
+            case "monday":
+                return 2;
+            case "tuesday":
+                return 3;
+            case "wednesday":
+                return 4;
+            case "thursday":
+                return 5;
+            case "friday":
+                return 6;
+            case "saturday":
+                return 7;
+            default:
+                throw new IllegalArgumentException("Invalid day of the week");
+        }
+    }
+}
 
